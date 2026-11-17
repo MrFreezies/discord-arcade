@@ -7,8 +7,10 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
     body { background: #1e1f22; color: #f2f3f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-    header { background: #2b2d31; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; }
-    h1 { font-size: 1.1rem; font-weight: 700; }
+    header { background: #2b2d31; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; gap: 12px; }
+    h1 { font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
+    #search-input { background: #1e1f22; border: 1px solid #3f4147; color: white; padding: 6px 12px; border-radius: 4px; outline: none; width: 250px; font-size: 0.9rem; }
+    #search-input:focus { border-color: #5865f2; }
     #back-btn { background: #5865f2; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; display: none; }
     #back-btn:hover { background: #4752c4; }
     #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; }
@@ -23,7 +25,8 @@
 <body>
 
   <header>
-    <h1 id="header-title">Retro Arcade Library</h1>
+    <h1 id="header-title">Retro Arcade</h1>
+    <input type="text" id="search-input" placeholder="Search games..." />
     <button id="back-btn" onclick="location.reload()">Back to Games</button>
   </header>
 
@@ -39,6 +42,7 @@
     const DISCORD_CLIENT_ID = "YOUR_DISCORD_CLIENT_ID";
 
     const GAMES = [
+      // SNES Games
       { title: "California Games II", system: "snes", file: "./roms/California Games II (USA).zip" },
       { title: "Captain America and the Avengers", system: "snes", file: "./roms/Captain America and the Avengers (USA).zip" },
       { title: "Castlevania - Dracula X", system: "snes", file: "./roms/Castlevania - Dracula X (USA).zip" },
@@ -101,7 +105,65 @@
       { title: "WWF Royal Rumble", system: "snes", file: "./roms/WWF Royal Rumble (USA).zip" },
       { title: "WWF Super WrestleMania", system: "snes", file: "./roms/WWF Super WrestleMania (USA).zip" },
       { title: "WWF WrestleMania - The Arcade Game", system: "snes", file: "./roms/WWF WrestleMania - The Arcade Game (USA).zip" },
-      { title: "X-Men - Mutant Apocalypse", system: "snes", file: "./roms/X-Men - Mutant Apocalypse (USA).zip" }
+      { title: "X-Men - Mutant Apocalypse", system: "snes", file: "./roms/X-Men - Mutant Apocalypse (USA).zip" },
+
+      // NES Games (Deduplicated)
+      { title: "Battletoads & Double Dragon", system: "nes", file: "./roms/Battletoads & Double Dragon (E) [!].nes" },
+      { title: "Castlevania", system: "nes", file: "./roms/Castlevania (E) [!].nes" },
+      { title: "Castlevania II - Simon's Quest", system: "nes", file: "./roms/Castlevania II - Simon's Quest (E) [!].nes" },
+      { title: "Castlevania III - Dracula's Curse", system: "nes", file: "./roms/Castlevania III - Dracula's Curse (E) [!].nes" },
+      { title: "Die Hard", system: "nes", file: "./roms/Die Hard (E) [!].nes" },
+      { title: "Donkey Kong - Original Edition", system: "nes", file: "./roms/Donkey Kong - Original Edition (E) (VC) [!].nes" },
+      { title: "Double Dragon", system: "nes", file: "./roms/Double Dragon (E) [!].nes" },
+      { title: "Double Dragon II - The Revenge", system: "nes", file: "./roms/Double Dragon II - The Revenge (E) [!].nes" },
+      { title: "Double Dragon III - The Sacred Stones", system: "nes", file: "./roms/Double Dragon III - The Sacred Stones (E) [!].nes" },
+      { title: "DuckTales", system: "nes", file: "./roms/DuckTales (E) [Hack angrylion (06.09.2009)] (POGOv1).nes" },
+      { title: "DuckTales 2", system: "nes", file: "./roms/DuckTales 2 (E) [!].nes" },
+      { title: "Felix the Cat", system: "nes", file: "./roms/Felix the Cat (E) [!].nes" },
+      { title: "Galaga", system: "nes", file: "./roms/Galaga (E) [!].nes" },
+      { title: "Gauntlet II", system: "nes", file: "./roms/Gauntlet II (E) [!].nes" },
+      { title: "Ghostbusters II", system: "nes", file: "./roms/Ghostbusters II (E) [!].nes" },
+      { title: "Ghost'n Goblins", system: "nes", file: "./roms/Ghost'n Goblins (E) [!].nes" },
+      { title: "Godzilla - Monster of Monsters!", system: "nes", file: "./roms/Godzilla - Monster of Monsters! (E) [!].nes" },
+      { title: "Legend of Zelda", system: "nes", file: "./roms/Legend of Zelda, The (E) (V1.1) (VC) [!].nes" },
+      { title: "Maniac Mansion", system: "nes", file: "./roms/Maniac Mansion (E).nes" },
+      { title: "Mario & Yoshi", system: "nes", file: "./roms/Mario & Yoshi (E) [!].nes" },
+      { title: "Mario Bros. (PAL-MA-0)", system: "nes", file: "./roms/Mario Bros. (E) (PAL-MA-0) [!].nes" },
+      { title: "Mario Bros. (PAL-MC-0)", system: "nes", file: "./roms/Mario Bros. (E) (PAL-MC-0) [!].nes" },
+      { title: "Mario is Missing!", system: "nes", file: "./roms/Mario is Missing! (E) [!].nes" },
+      { title: "Mega Man", system: "nes", file: "./roms/Mega Man (E) [!].nes" },
+      { title: "Mega Man 2", system: "nes", file: "./roms/Mega Man 2 (E) [!].nes" },
+      { title: "Mega Man 3", system: "nes", file: "./roms/Mega Man 3 (E) (V1.1) [!].nes" },
+      { title: "Mega Man 4", system: "nes", file: "./roms/Mega Man 4 (E) [!].nes" },
+      { title: "Mega Man 5", system: "nes", file: "./roms/Mega Man 5 (E) [!].nes" },
+      { title: "Metal Gear", system: "nes", file: "./roms/Metal Gear (E) [!].nes" },
+      { title: "Mike Tyson's Punch-Out!!", system: "nes", file: "./roms/Mike Tyson's Punch-Out!! (E) (V1.1) [!].nes" },
+      { title: "Mission - Impossible", system: "nes", file: "./roms/Mission - Impossible (E) [!].nes" },
+      { title: "NewZealand Story", system: "nes", file: "./roms/NewZealand Story, The (E) [!].nes" },
+      { title: "Pac-Man", system: "nes", file: "./roms/Pac-Man (E) [!].nes" },
+      { title: "Paperboy 2", system: "nes", file: "./roms/Paperboy 2 (E) [!].nes" },
+      { title: "Shadow Warriors - Ninja Gaiden", system: "nes", file: "./roms/Shadow Warriors - Ninja Gaiden (E) (VC) [!].nes" },
+      { title: "The Simpsons - Bart vs. the World", system: "nes", file: "./roms/Simpsons, The - Bart vs. the World (E) [!].nes" },
+      { title: "The Simpsons - Bartman Meets Radioactive Man", system: "nes", file: "./roms/Simpsons, The - Bartman Meets Radioactive Man (E) [!].nes" },
+      { title: "Skate or Die", system: "nes", file: "./roms/Skate or Die (E) [!].nes" },
+      { title: "Ski or Die", system: "nes", file: "./roms/Ski or Die (E) [!].nes" },
+      { title: "Super Mario Bros.", system: "nes", file: "./roms/Super Mario Bros. (E) (V1.1) [!].nes" },
+      { title: "Super Mario Bros. + Duck Hunt", system: "nes", file: "./roms/Super Mario Bros. + Duck Hunt (E) [!].nes" },
+      { title: "Super Mario Bros. + Tetris + Nintendo World Cup", system: "nes", file: "./roms/Super Mario Bros. + Tetris + Nintendo World Cup (E) (V1.1) [!].nes" },
+      { title: "Super Mario Bros. 2", system: "nes", file: "./roms/Super Mario Bros. 2 (E) [!].nes" },
+      { title: "Super Mario Bros. 3", system: "nes", file: "./roms/Super Mario Bros. 3 (E) [!].nes" },
+      { title: "Tecmo World Cup Soccer", system: "nes", file: "./roms/Tecmo World Cup Soccer (E) [!].nes" },
+      { title: "Teenage Mutant Hero Turtles - Tournament Fighters", system: "nes", file: "./roms/Teenage Mutant Hero Turtles - Tournament Fighters (E) [!].nes" },
+      { title: "Teenage Mutant Hero Turtles II - The Arcade Game", system: "nes", file: "./roms/Teenage Mutant Hero Turtles II - The Arcade Game (E) [!].nes" },
+      { title: "Tiny Toon Adventures", system: "nes", file: "./roms/Tiny Toon Adventures (E) [!].nes" },
+      { title: "Tiny Toon Adventures - Cartoon Workshop", system: "nes", file: "./roms/Tiny Toon Adventures - Cartoon Workshop (E) [!].nes" },
+      { title: "Tom & Jerry - The Ultimate Game of Cat and Mouse!", system: "nes", file: "./roms/Tom & Jerry - The Ultimate Game of Cat and Mouse! (E) [!].nes" },
+      { title: "Willow", system: "nes", file: "./roms/Willow (E) [!].nes" },
+      { title: "WWF King of the Ring", system: "nes", file: "./roms/WWF King of the Ring (E) [!].nes" },
+      { title: "WWF WrestleMania - Challenge", system: "nes", file: "./roms/WWF WrestleMania - Challenge (E) [!].nes" },
+      { title: "WWF WrestleMania - Steel Cage Challenge", system: "nes", file: "./roms/WWF WrestleMania - Steel Cage Challenge (E) [!].nes" },
+      { title: "Yoshi's Cookie", system: "nes", file: "./roms/Yoshi's Cookie (E) [!].nes" },
+      { title: "Zelda II - The Adventure of Link", system: "nes", file: "./roms/Zelda II - The Adventure of Link (E) (V1.2) (VC) [!].nes" }
     ];
 
     async function initDiscord() {
@@ -117,19 +179,30 @@
     }
 
     const libraryEl = document.getElementById("library");
-    GAMES.forEach(game => {
-      const card = document.createElement("div");
-      card.className = "game-card";
-      card.innerHTML = `
-        <span class="system-badge">${game.system}</span>
-        <div class="game-title">${game.title}</div>
-      `;
-      card.onclick = () => launchGame(game);
-      libraryEl.appendChild(card);
+    
+    function renderLibrary(filter = "") {
+      libraryEl.innerHTML = "";
+      const filtered = GAMES.filter(g => g.title.toLowerCase().includes(filter.toLowerCase()));
+      
+      filtered.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.innerHTML = `
+          <span class="system-badge">${game.system}</span>
+          <div class="game-title">${game.title}</div>
+        `;
+        card.onclick = () => launchGame(game);
+        libraryEl.appendChild(card);
+      });
+    }
+
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      renderLibrary(e.target.value);
     });
 
     window.launchGame = function(game) {
       document.getElementById("library").style.display = "none";
+      document.getElementById("search-input").style.display = "none";
       document.getElementById("player-container").style.display = "block";
       document.getElementById("back-btn").style.display = "block";
       document.getElementById("header-title").textContent = game.title;
@@ -148,6 +221,7 @@
       document.body.appendChild(script);
     };
 
+    renderLibrary();
     initDiscord();
   </script>
 </body>
