@@ -46,6 +46,7 @@
     
     #player-container { flex: 1; width: 100%; display: none; background: #000; position: relative; min-height: calc(100vh - 60px); }
     #game { width: 100%; height: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+    #loading-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; z-index: 20; display: none; }
   </style>
 </head>
 <body>
@@ -59,6 +60,7 @@
   <div id="library"></div>
 
   <div id="player-container">
+    <div id="loading-overlay">Loading ROM into memory...</div>
     <div id="game"></div>
   </div>
 
@@ -488,8 +490,7 @@
         const discordSdk = new DiscordSDK(DISCORD_CLIENT_ID);
         await discordSdk.ready();
         patchUrlMappings([
-          { prefix: "/ejs-cdn", target: "cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/" },
-          { prefix: "/roms-proxy", target: window.location.host + "/arcade-z3r0/roms/" }
+          { prefix: "/ejs-cdn", target: "cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/" }
         ]);
       } catch (err) {
         console.warn("Running outside Discord or SDK init skipped:", err);
@@ -515,8 +516,7 @@
 
         card.innerHTML = `
           <div class="card-thumb">
-            <img src="${boxArtUrl}" alt="${game.title}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" crossorigin="anonymous" />
-            <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">🎮 ${game.system.toUpperCase()}</div>
+            <img src="${boxArtUrl}" alt="${game.title}" onerror="this.outerHTML='<div style=\\\'display:flex; width:100%; height:100%; align-items:center; justify-content:center; font-weight:bold; color:#5865f2;\\\'>🎮 ' + game.system.toUpperCase() + '</div>';" crossorigin="anonymous" />
           </div>
           <div>
             <span class="system-badge">${game.system}</span>
@@ -532,39 +532,54 @@
       renderLibrary(e.target.value);
     });
 
-    window.launchGame = function(game) {
+    window.launchGame = async function(game) {
       libraryEl.style.display = "none";
       document.getElementById("search-input").style.display = "none";
       document.getElementById("player-container").style.display = "block";
       document.getElementById("back-btn").style.display = "block";
       document.getElementById("header-title").textContent = game.title;
+      
+      const loadingOverlay = document.getElementById("loading-overlay");
+      loadingOverlay.style.display = "flex";
 
       const isDiscord = window.location.hostname.includes("discordsays.com");
       const cdnBase = isDiscord ? "/ejs-cdn/" : "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/";
 
-      // Fully URI encode path segments to prevent GitHub Pages and Discord 404s on spaces/parentheses
-      const pathParts = game.file.split('/');
-      pathParts[pathParts.length - 1] = encodeURIComponent(pathParts[pathParts.length - 1]);
-      const safeFilepath = pathParts.join('/');
-      const absoluteRomUrl = new URL(safeFilepath, window.location.href).href;
+      try {
+        // Fetch ROM binary and convert to local blob URL to bypass GitHub Pages CORS / Range header failures in iframe
+        const pathParts = game.file.split('/');
+        pathParts[pathParts.length - 1] = encodeURIComponent(pathParts[pathParts.length - 1]);
+        const safeFilepath = pathParts.join('/');
+        const absoluteRomUrl = new URL(safeFilepath, window.location.href).href;
 
-      window.EJS_player = "#game";
-      window.EJS_core = CORE_MAPPING[game.system] || game.system;
-      window.EJS_gameUrl = absoluteRomUrl;
-      window.EJS_pathtodata = cdnBase;
-      window.EJS_startOnLoaded = true;
-      window.EJS_color = "#1e1f22";
+        const response = await fetch(absoluteRomUrl);
+        if (!response.ok) throw new Error(`Failed to fetch ROM: ${response.statusText}`);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
 
-      const gameContainer = document.getElementById("game");
-      gameContainer.innerHTML = '';
+        window.EJS_player = "#game";
+        window.EJS_core = CORE_MAPPING[game.system] || game.system;
+        window.EJS_gameUrl = blobUrl;
+        window.EJS_pathtodata = cdnBase;
+        window.EJS_startOnLoaded = true;
+        window.EJS_color = "#1e1f22";
 
-      const oldScript = document.getElementById("ejs-loader-script");
-      if (oldScript) oldScript.remove();
+        const gameContainer = document.getElementById("game");
+        gameContainer.innerHTML = '';
 
-      const script = document.createElement("script");
-      script.id = "ejs-loader-script";
-      script.src = cdnBase + "loader.js";
-      document.body.appendChild(script);
+        const oldScript = document.getElementById("ejs-loader-script");
+        if (oldScript) oldScript.remove();
+
+        const script = document.createElement("script");
+        script.id = "ejs-loader-script";
+        script.src = cdnBase + "loader.js";
+        script.onload = () => { loadingOverlay.style.display = "none"; };
+        document.body.appendChild(script);
+
+      } catch (err) {
+        console.error("Error launching game:", err);
+        loadingOverlay.textContent = "Error loading ROM: " + err.message;
+      }
     };
 
     window.returnToLibrary = function() {
@@ -572,6 +587,7 @@
       const oldScript = document.getElementById("ejs-loader-script");
       if (oldScript) oldScript.remove();
 
+      document.getElementById("loading-overlay").style.display = "none";
       document.getElementById("player-container").style.display = "none";
       libraryEl.style.display = "grid";
       document.getElementById("search-input").style.display = "block";
