@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ᴀʀᴄᴀᴅᴇ Z3R0</title>
-<style>
+  <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background: #1e1f22; color: #f2f3f5; height: 100vh; width: 100vw; overflow: hidden; position: relative; }
-    header { position: absolute; top: 0; left: 0; right: 0; height: 50px; background: #2b2d31; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; z-index: 10; }
+    body { background: #1e1f22; color: #f2f3f5; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    
+    header { height: 60px; background: #2b2d31; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; width: 100%; position: sticky; top: 0; z-index: 10; }
     h1 { font-size: 1.1rem; font-weight: 700; white-space: nowrap; }
     #search-input { background: #1e1f22; border: 1px solid #3f4147; color: white; padding: 6px 12px; border-radius: 4px; outline: none; width: 250px; font-size: 0.9rem; }
     #search-input:focus { border-color: #5865f2; }
@@ -15,17 +16,13 @@
     #back-btn:hover { background: #4752c4; }
     
     #library { 
-      position: absolute; 
-      top: 50px; 
-      bottom: 0; 
-      left: 0; 
-      right: 0; 
       padding: 24px; 
       display: grid; 
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
       grid-auto-rows: 190px; 
       gap: 16px; 
-      overflow-y: auto; 
+      width: 100%;
+      flex: 1;
     }
     
     .game-card { 
@@ -47,8 +44,8 @@
     .system-badge { display: inline-block; background: #5865f2; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; width: fit-content; text-transform: uppercase; flex-shrink: 0; }
     .game-title { font-size: 0.85rem; font-weight: 600; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex-shrink: 0; }
     
-    #player-container { position: absolute; top: 50px; bottom: 0; left: 0; right: 0; display: none; background: #000; z-index: 5; }
-    #game { width: 100%; height: 100%; position: relative; }
+    #player-container { flex: 1; width: 100%; display: none; background: #000; position: relative; min-height: calc(100vh - 60px); }
+    #game { width: 100%; height: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
   </style>
 </head>
 <body>
@@ -93,7 +90,6 @@
     };
 
     const GAMES = [
-      // SNES Games
       { title: "California Games II", system: "snes", file: "./roms/California Games II (USA).zip" },
       { title: "Captain America and the Avengers", system: "snes", file: "./roms/Captain America and the Avengers (USA).zip" },
       { title: "Castlevania - Dracula X", system: "snes", file: "./roms/Castlevania - Dracula X (USA).zip" },
@@ -158,7 +154,6 @@
       { title: "WWF WrestleMania - The Arcade Game", system: "snes", file: "./roms/WWF WrestleMania - The Arcade Game (USA).zip" },
       { title: "X-Men - Mutant Apocalypse", system: "snes", file: "./roms/X-Men - Mutant Apocalypse (USA).zip" },
 
-      // NES Games
       { title: "Battletoads & Double Dragon", system: "nes", file: "./roms/Battletoads & Double Dragon (E) [!].nes" },
       { title: "Castlevania", system: "nes", file: "./roms/Castlevania (E) [!].nes" },
       { title: "Castlevania II - Simon's Quest", system: "nes", file: "./roms/Castlevania II - Simon's Quest (E) [!].nes" },
@@ -216,7 +211,6 @@
       { title: "Yoshi's Cookie", system: "nes", file: "./roms/Yoshi's Cookie (E) [!].nes" },
       { title: "Zelda II - The Adventure of Link", system: "nes", file: "./roms/Zelda II - The Adventure of Link (E) (V1.2) (VC) [!].nes" },
 
-      // N64 Games
       { title: "Donald Duck - Quack Attack", system: "n64", file: "./roms/Donald Duck - Quack Attack (E).z64" },
       { title: "GoldenEye 007", system: "n64", file: "./roms/GoldenEye 007 (E).n64" },
       { title: "Mario Golf", system: "n64", file: "./roms/Mario Golf (U).v64" },
@@ -234,7 +228,6 @@
       { title: "Tony Hawk's Pro Skater 2", system: "n64", file: "./roms/Tony Hawk's Pro Skater 2 (U).v64" },
       { title: "Tony Hawk's Pro Skater 3", system: "n64", file: "./roms/Tony Hawk's Pro Skater 3 (U).v64" },
 
-      // Game Boy Advance Games
       { title: "0579 - Densetsu no Stafy", system: "gba", file: "./roms/0579 - Densetsu no Stafy.gba" },
       { title: "4-in-1 - GT Advance", system: "gba", file: "./roms/4-in-1 - GT Advance - Championship Racing & GT Advance 2 - Rally Racing & GT Advance 3 - Pro Concept Racing & Moto GP (U).gba" },
       { title: "Advance Wars", system: "gba", file: "./roms/Advanced Wars.gba" },
@@ -390,7 +383,6 @@
       { title: "Zelda - The Minish Cap", system: "gba", file: "./roms/Zelda - the Minish Cap # GBA.GBA" },
       { title: "Legend of Zelda - A Link to the Past & Four Swords", system: "gba", file: "./roms/Legend of Zelda, The - A Link to the Past & Four Swords (USA, Australia).gba" },
 
-      // Game Boy / Game Boy Color Games
       { title: "Dr. Mario", system: "gb", file: "./roms/Dr. Mario (E).gb" },
       { title: "Metal Gear Solid", system: "gb", file: "./roms/Metal Gear Solid.gbc" },
       { title: "RoboCop", system: "gb", file: "./roms/RoboCop (USA).gb" },
@@ -399,7 +391,6 @@
       { title: "Teenage Mutant Ninja Turtles - Fall of the Foot Clan", system: "gb", file: "./roms/Teenage Mutant Ninja Turtles - Fall of the Foot Clan (U).gb" },
       { title: "Tetris", system: "gb", file: "./roms/Tetris (E).gb" },
 
-      // Sega Master System Games
       { title: "Afterburner", system: "segaMS", file: "./roms/Afterburner.sms" },
       { title: "Alex Kidd - BMX Trial", system: "segaMS", file: "./roms/Alex Kidd - BMX Trial.sms" },
       { title: "Alex Kidd - High Tech World", system: "segaMS", file: "./roms/Alex Kidd - High Tech World.sms" },
@@ -463,7 +454,6 @@
       { title: "World Cup USA '94", system: "segaMS", file: "./roms/World Cup USA '94.sms" },
       { title: "World Games (UE)", system: "segaMS", file: "./roms/World Games (UE) [!].sms" },
 
-      // Sega Game Gear Games
       { title: "Adventures of Batman and Robin", system: "gamegear", file: "./roms/Adventures of Batman and Robin.gg" },
       { title: "Double Dragon", system: "gamegear", file: "./roms/Double Dragon.gg" },
       { title: "Iron Man and X-O Manowar in Heavy Metal", system: "gamegear", file: "./roms/Iron Man and X-O Manowar in Heavy Metal.gg" },
@@ -475,7 +465,6 @@
       { title: "Spider-Man - Return of the Sinister Six", system: "gamegear", file: "./roms/Spider-Man - Return of the Sinister Six.gg" },
       { title: "Tails Adventure", system: "gamegear", file: "./roms/Tails Adventure.gg" },
 
-      // Sega Mega Drive / Genesis Games
       { title: "Alex Kidd in the Enchanted Castle", system: "segaMD", file: "./roms/Alex Kidd in the Enchanted Castle.md" },
       { title: "Altered Beast", system: "segaMD", file: "./roms/Altered Beast (REV 02) (JU) [h4].bin" },
       { title: "Comix Zone", system: "segaMD", file: "./roms/Comix Zone (U).md" },
@@ -499,7 +488,8 @@
         const discordSdk = new DiscordSDK(DISCORD_CLIENT_ID);
         await discordSdk.ready();
         patchUrlMappings([
-          { prefix: "/ejs-cdn", target: "cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/" }
+          { prefix: "/ejs-cdn", target: "cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/" },
+          { prefix: "/roms-proxy", target: window.location.host + "/arcade-z3r0/roms/" }
         ]);
       } catch (err) {
         console.warn("Running outside Discord or SDK init skipped:", err);
@@ -543,7 +533,7 @@
     });
 
     window.launchGame = function(game) {
-      document.getElementById("library").style.display = "none";
+      libraryEl.style.display = "none";
       document.getElementById("search-input").style.display = "none";
       document.getElementById("player-container").style.display = "block";
       document.getElementById("back-btn").style.display = "block";
@@ -552,7 +542,11 @@
       const isDiscord = window.location.hostname.includes("discordsays.com");
       const cdnBase = isDiscord ? "/ejs-cdn/" : "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/";
 
-      const absoluteRomUrl = new URL(game.file, window.location.href).href;
+      // Fully URI encode path segments to prevent GitHub Pages and Discord 404s on spaces/parentheses
+      const pathParts = game.file.split('/');
+      pathParts[pathParts.length - 1] = encodeURIComponent(pathParts[pathParts.length - 1]);
+      const safeFilepath = pathParts.join('/');
+      const absoluteRomUrl = new URL(safeFilepath, window.location.href).href;
 
       window.EJS_player = "#game";
       window.EJS_core = CORE_MAPPING[game.system] || game.system;
@@ -579,7 +573,7 @@
       if (oldScript) oldScript.remove();
 
       document.getElementById("player-container").style.display = "none";
-      document.getElementById("library").style.display = "grid";
+      libraryEl.style.display = "grid";
       document.getElementById("search-input").style.display = "block";
       document.getElementById("back-btn").style.display = "none";
       document.getElementById("header-title").textContent = "ᴀʀᴄᴀᴅᴇ Z3R0";
