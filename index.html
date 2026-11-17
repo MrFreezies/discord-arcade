@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ᴀʀᴄᴀᴅᴇ Z3R0</title>
-  <style>
+<style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
     body { background: #1e1f22; color: #f2f3f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     header { background: #2b2d31; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; gap: 12px; }
@@ -13,8 +13,8 @@
     #search-input:focus { border-color: #5865f2; }
     #back-btn { background: #5865f2; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; display: none; }
     #back-btn:hover { background: #4752c4; }
-    #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; }
-    .game-card { background: #2b2d31; border: 1px solid #3f4147; border-radius: 8px; padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; align-content: start; }
+    .game-card { background: #2b2d31; border: 1px solid #3f4147; border-radius: 8px; padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; height: 180px; }
     .game-card:hover { transform: translateY(-3px); border-color: #5865f2; box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2); }
     .card-thumb { width: 100%; height: 110px; background: #111214; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 0.8rem; color: #80848e; text-align: center; }
     .system-badge { display: inline-block; background: #5865f2; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; width: fit-content; text-transform: uppercase; }
