@@ -70,7 +70,6 @@
 
     const DISCORD_CLIENT_ID = "1572240550340329542";
 
-    // Accurate core mappings for EmulatorJS loader
     const CORE_MAPPING = {
       snes: "snes",
       nes: "nes",
@@ -82,7 +81,6 @@
       segaMD: "segaMD"
     };
 
-    // Libretro thumbnail system mapping directory names for automated cover scraping
     const THUMB_SYSTEMS = {
       snes: "Nintendo - Super Nintendo Entertainment System",
       nes: "Nintendo - Nintendo Entertainment System",
@@ -490,10 +488,7 @@
       { title: "Rock n' Roll Racing", system: "segaMD", file: "./roms/Rock n' Roll Racing.bin" },
       { title: "Shinobi 3 - Return of the Ninja Master", system: "segaMD", file: "./roms/Shinobi 3 - Return of the Ninja Master.bin" },
       { title: "Sonic & Knuckles", system: "segaMD", file: "./roms/Sonic & Knuckles.bin" },
-      { title: "Streets of Rage", system: "segaMD", file: "./roms/Streets of Rage.bin" },
-      { title: "Streets of Rage 2", system: "segaMD", file: "./roms/Streets of Rage 2.bin" },
-      { title: "Streets of Rage 3", system: "segaMD", file: "./roms/Streets of Rage 3.bin" },
-      { title: "Yu Yu Hakusho - Makyou Toitsusen", system: "segaMD", file: "./roms/Yu Yu Hakusho - Makyou Toitsusen (J).md" }
+      { title: "Streets of Rage / Streets of Rage 2 / Streets of Rage 3", system: "segaMD", file: "./roms/Streets of Rage.bin" }
     ];
 
     async function initDiscord() {
@@ -518,11 +513,12 @@
         const card = document.createElement("div");
         card.className = "game-card";
         
-        // Automated Cover Art API / Scraper endpoint mapping via standard Libretro thumbnail CDNs
+        // Extract clean file identifier base name from game.file to match Libretro's exact repository naming convention
+        const fileNameMatch = game.file.match(/\/([^\/]+)\.[a-z0-9]+$/i);
+        const romBaseName = fileNameMatch ? fileNameMatch[1] : game.title;
         const libretroSystem = THUMB_SYSTEMS[game.system] || "";
-        const encodedTitle = encodeURIComponent(game.title);
         const boxArtUrl = libretroSystem 
-          ? `https://raw.githubusercontent.com/libretro-thumbnails/${encodeURIComponent(libretroSystem)}/master/Named_Boxarts/${encodedTitle}.png`
+          ? `https://raw.githubusercontent.com/libretro-thumbnails/${encodeURIComponent(libretroSystem)}/master/Named_Boxarts/${encodeURIComponent(romBaseName)}.png`
           : "";
 
         card.innerHTML = `
@@ -554,14 +550,16 @@
       const isDiscord = window.location.hostname.includes("discordsays.com");
       const cdnBase = isDiscord ? "/ejs-cdn/" : "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/";
 
+      // Convert relative ROM path to a fully qualified absolute URL so the emulator instance can fetch the binary properly
+      const absoluteRomUrl = new URL(game.file, window.location.href).href;
+
       window.EJS_player = "#game";
       window.EJS_core = CORE_MAPPING[game.system] || game.system;
-      window.EJS_gameUrl = game.file;
+      window.EJS_gameUrl = absoluteRomUrl;
       window.EJS_pathtodata = cdnBase;
       window.EJS_startOnLoaded = true;
       window.EJS_color = "#1e1f22";
 
-      // Flush prior instance elements & scripts to prevent canvas locking / black screens
       const gameContainer = document.getElementById("game");
       gameContainer.innerHTML = '';
 
