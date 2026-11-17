@@ -37,6 +37,10 @@
   </div>
 
   <script type="module">
+    import { DiscordSDK, patchUrlMappings } from "https://cdn.jsdelivr.net/npm/@discord/embedded-app-sdk@1.0.0/+esm";
+
+    const DISCORD_CLIENT_ID = "123456789012345678";
+
     const GAMES = [
       // SNES Games
       { title: "California Games II", system: "snes", file: "./roms/California Games II (USA).zip" },
@@ -439,6 +443,18 @@
       { title: "Yu Yu Hakusho - Makyou Toitsusen", system: "segaMD", file: "./roms/Yu Yu Hakusho - Makyou Toitsusen (J).md" }
     ];
 
+    async function initDiscord() {
+      try {
+        const discordSdk = new DiscordSDK(DISCORD_CLIENT_ID);
+        await discordSdk.ready();
+        patchUrlMappings([
+          { prefix: "/ejs-cdn", target: "cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/" }
+        ]);
+      } catch (err) {
+        console.warn("Running outside Discord or SDK init skipped:", err);
+      }
+    }
+
     const libraryEl = document.getElementById("library");
     
     function renderLibrary(filter = "") {
@@ -468,7 +484,8 @@
       document.getElementById("back-btn").style.display = "block";
       document.getElementById("header-title").textContent = game.title;
 
-      const cdnBase = "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/";
+      const isDiscord = window.location.hostname.includes("discordsays.com");
+      const cdnBase = isDiscord ? "/ejs-cdn/" : "https://cdn.jsdelivr.net/gh/EmulatorJS/EmulatorJS@latest/data/";
 
       window.EJS_player = "#game";
       window.EJS_core = game.system;
@@ -482,6 +499,7 @@
     };
 
     renderLibrary();
+    initDiscord();
   </script>
 </body>
 </html>
