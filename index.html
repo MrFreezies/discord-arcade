@@ -13,11 +13,12 @@
     #search-input:focus { border-color: #5865f2; }
     #back-btn { background: #5865f2; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; display: none; }
     #back-btn:hover { background: #4752c4; }
-    #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; }
-    .game-card { background: #2b2d31; border: 1px solid #3f4147; border-radius: 8px; padding: 16px; cursor: pointer; transition: transform 0.1s, border-color 0.1s; display: flex; flex-direction: column; justify-content: space-between; }
-    .game-card:hover { transform: translateY(-2px); border-color: #5865f2; }
-    .system-badge { display: inline-block; background: #5865f2; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; width: fit-content; margin-bottom: 8px; text-transform: uppercase; }
-    .game-title { font-size: 1rem; font-weight: 600; }
+    #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; }
+    .game-card { background: #2b2d31; border: 1px solid #3f4147; border-radius: 8px; padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+    .game-card:hover { transform: translateY(-3px); border-color: #5865f2; box-shadow: 0 4px 12px rgba(88, 101, 242, 0.2); }
+    .card-thumb { width: 100%; height: 110px; background: #111214; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 0.8rem; color: #80848e; text-align: center; }
+    .system-badge { display: inline-block; background: #5865f2; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; width: fit-content; text-transform: uppercase; }
+    .game-title { font-size: 0.9rem; font-weight: 600; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     #player-container { flex: 1; width: 100%; height: 100%; display: none; background: #000; }
     #game { width: 100%; height: 100%; }
   </style>
@@ -465,8 +466,11 @@
         const card = document.createElement("div");
         card.className = "game-card";
         card.innerHTML = `
-          <span class="system-badge">${game.system}</span>
-          <div class="game-title">${game.title}</div>
+          <div class="card-thumb">🎮 ${game.system.toUpperCase()}</div>
+          <div>
+            <span class="system-badge">${game.system}</span>
+            <div class="game-title">${game.title}</div>
+          </div>
         `;
         card.onclick = () => launchGame(game);
         libraryEl.appendChild(card);
