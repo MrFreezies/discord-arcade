@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord Retro Arcade</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background: #1e1f22; color: #f2f3f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+    header { background: #2b2d31; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111214; }
+    h1 { font-size: 1.1rem; font-weight: 700; }
+    #back-btn { background: #5865f2; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; display: none; }
+    #back-btn:hover { background: #4752c4; }
+    #library { padding: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; flex: 1; }
+    .game-card { background: #2b2d31; border: 1px solid #3f4147; border-radius: 8px; padding: 16px; cursor: pointer; transition: transform 0.1s, border-color 0.1s; display: flex; flex-direction: column; justify-content: space-between; }
+    .game-card:hover { transform: translateY(-2px); border-color: #5865f2; }
+    .system-badge { display: inline-block; background: #5865f2; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 12px; width: fit-content; margin-bottom: 8px; text-transform: uppercase; }
+    .game-title { font-size: 1rem; font-weight: 600; }
+    #player-container { flex: 1; width: 100%; height: 100%; display: none; background: #000; }
+    #game { width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="header-title">Retro Arcade Library</h1>
+    <button id="back-btn" onclick="location.reload()">Back to Games</button>
+  </header>
+
+  <div id="library"></div>
+
+  <div id="player-container">
+    <div id="game"></div>
+  </div>
+
+  <script type="module">
+    import { DiscordSDK, patchUrlMappings } from "https://jsdelivr.net";
+
+    const DISCORD_CLIENT_ID = "YOUR_DISCORD_CLIENT_ID";
+
+    const GAMES = [
+      { title: "Super Mario World", system: "snes", file: "./roms/super_mario_world.sfc" },
+      { title: "Sonic the Hedgehog", system: "segaMD", file: "./roms/sonic.md" },
+      { title: "Wizball (C64)", system: "vice_x64", file: "./roms/wizball.d64" }
+    ];
+
+    async function initDiscord() {
+      try {
+        const discordSdk = new DiscordSDK(DISCORD_CLIENT_ID);
+        await discordSdk.ready();
+        patchUrlMappings([
+          { prefix: "/ejs-cdn", target: "cdn.emulatorjs.org" }
+        ]);
+      } catch (err) {
+        console.warn("Running outside Discord or SDK init skipped:", err);
+      }
+    }
+
+    const libraryEl = document.getElementById("library");
+    GAMES.forEach(game => {
+      const card = document.createElement("div");
+      card.className = "game-card";
+      card.innerHTML = `
+        <span class="system-badge">${game.system}</span>
+        <div class="game-title">${game.title}</div>
+      `;
+      card.onclick = () => launchGame(game);
+      libraryEl.appendChild(card);
+    });
+
+    window.launchGame = function(game) {
+      document.getElementById("library").style.display = "none";
+      document.getElementById("player-container").style.display = "block";
+      document.getElementById("back-btn").style.display = "block";
+      document.getElementById("header-title").textContent = game.title;
+
+      const isDiscord = window.location.hostname.includes("discordsays.com");
+      const cdnBase = isDiscord ? "/ejs-cdn/stable/data/" : "https://cdn.emulatorjs.org/stable/data/";
+
+      window.EJS_player = "#game";
+      window.EJS_core = game.system;
+      window.EJS_gameUrl = game.file;
+      window.EJS_pathtodata = cdnBase;
+      window.EJS_startOnLoaded = true;
+
+      const script = document.createElement("script");
+      script.src = cdnBase + "loader.js";
+      document.body.appendChild(script);
+    };
+
+    initDiscord();
+  </script>
+</body>
+</html>
